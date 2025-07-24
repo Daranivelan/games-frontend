@@ -13,7 +13,7 @@ const Cart = () => {
     tags: ["Metroidvania", "Indie", "Action"],
   };
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-br from-[#1a1814] to-[#2d2a1f]">
       <CartCard
         game={gameData}
         quantity={2}

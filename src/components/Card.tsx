@@ -86,7 +86,7 @@ const Card = ({
             className="absolute top-3 right-3 w-8 h-8 backdrop-blur-md bg-white/20 hover:bg-white/30 border border-white/20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg"
           >
             <span className="text-lg filter drop-shadow-sm">
-              {isFavorite ? "❤️" : "🤍"}
+              {isFavorite ? "💛" : "🤍"}
             </span>
           </button>
         </div>

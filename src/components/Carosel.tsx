@@ -1,11 +1,11 @@
-import HK from "../assets/Hollow_Knight.jpeg";
-import ER from "../assets/Elden_Ring.jpeg";
+import GOW from "../assets/God_of_War.jpg";
+import ER from "../assets/Elden_Ring.jpg";
 import BMW from "../assets/Black_Myth_Wukong.jpeg";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const Carosel = () => {
-  const images = [HK, ER, BMW];
+  const images = [BMW, ER, GOW];
   return (
     <div>
       <Carousel
@@ -15,7 +15,6 @@ const Carosel = () => {
         stopOnHover={false}
         // centerMode={true}
         centerSlidePercentage={90}
-        showIndicators={false}
         showStatus={false}
         showThumbs={false}
       >

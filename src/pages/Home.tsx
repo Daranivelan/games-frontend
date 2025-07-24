@@ -30,7 +30,7 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="bg-gradient-to-br from-[#1a1814] to-[#2d2a1f]">
       <Carosel />
       <div className=" text-[#e6e5c7] min-h-screen flex items-center justify-center">
         <Card
