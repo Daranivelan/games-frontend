@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Card from "../components/Card";
+import Carosel from "../components/Carosel";
 
 const Home = () => {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -29,14 +30,17 @@ const Home = () => {
   };
 
   return (
-    <div className=" text-[#e6e5c7] min-h-screen flex items-center justify-center">
-      <Card
-        game={gameData}
-        onAddToCart={(id) => console.log("Added to cart:", id)}
-        onViewDetails={(id) => console.log("View details:", id)}
-        onToggleFavorite={handleToggleFavorite}
-        isFavorite={favorites.has(gameData.id)}
-      />
+    <div>
+      <Carosel />
+      <div className=" text-[#e6e5c7] min-h-screen flex items-center justify-center">
+        <Card
+          game={gameData}
+          onAddToCart={(id) => console.log("Added to cart:", id)}
+          onViewDetails={(id) => console.log("View details:", id)}
+          onToggleFavorite={handleToggleFavorite}
+          isFavorite={favorites.has(gameData.id)}
+        />
+      </div>
     </div>
   );
 };

@@ -99,25 +99,25 @@ const Navbar = () => {
             </button>
 
             <button
-              onClick={() => navigate("/games")}
+              onClick={() => navigate("/cart")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive("/games")
+                isActive("/cart")
                   ? "bg-white/20 text-white"
                   : "text-white/80 hover:text-white hover:bg-white/10"
               }`}
             >
-              Games
+              Cart
             </button>
 
             <button
-              onClick={() => navigate("/categories")}
+              onClick={() => navigate("/favourites")}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
-                isActive("/categories")
+                isActive("/favourites")
                   ? "bg-white/20 text-white"
                   : "text-white/80 hover:text-white hover:bg-white/10"
               }`}
             >
-              Categories
+              Favourites
             </button>
 
             {user ? (
