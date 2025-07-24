@@ -2,7 +2,8 @@ import { useState, type FormEvent } from "react";
 import type { AuthFormData } from "../types/auth";
 import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router-dom";
-import logoImage from "../assets/logo.png"; // Adjust the path as necessary
+import logoImage from "../assets/logo2.png"; // Adjust the path as necessary
+import bgImage from "../assets/background2.jpeg"; // Adjust the path as necessary
 
 const Login = () => {
   const [formData, setFormData] = useState<Omit<AuthFormData, "username">>({
@@ -29,7 +30,15 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e6e5c7] via-[#f0efdb] to-[#d4d3b7] flex items-center justify-center p-4">
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       {/* Logo Section */}
 
       {/* Form Section */}

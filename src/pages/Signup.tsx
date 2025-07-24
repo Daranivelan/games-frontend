@@ -2,7 +2,8 @@ import { useState, type FormEvent } from "react";
 import type { AuthFormData } from "../types/auth";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/authContext";
-import logoImage from "../assets/logo.png"; // Adjust the path as necessary
+import logoImage from "../assets/logo.png";
+import bgImage from "../assets/backgorund.jpeg"; // Adjust the path as necessary
 import "../index.css";
 
 const Signup = () => {
@@ -31,7 +32,15 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#e6e5c7] via-[#f0efdb] to-[#d4d3b7] flex items-center justify-center p-4">
+    <div
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{
+        backgroundImage: `url(${bgImage})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <div className="flex items-center justify-center w-[80%] bg-white/80 rounded-3xl">
         <div className="flex-1 flex items-center justify-center">
           <img src={logoImage} alt="GameStore Logo" />
