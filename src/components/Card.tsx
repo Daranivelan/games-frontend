@@ -15,15 +15,28 @@ interface CardProps {
   game: Game;
   onAddToCart?: (gameId: string) => void;
   onViewDetails?: (gameId: string) => void;
+  onToggleFavorite?: (gameId: string) => void;
+  isFavorite?: boolean;
 }
 
-const Card = ({ game, onAddToCart, onViewDetails }: CardProps) => {
+const Card = ({
+  game,
+  onAddToCart,
+  onViewDetails,
+  onToggleFavorite,
+  isFavorite = false,
+}: CardProps) => {
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
     onAddToCart?.(game.id);
+  };
+
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onToggleFavorite?.(game.id);
   };
 
   const handleCardClick = () => {
@@ -50,7 +63,7 @@ const Card = ({ game, onAddToCart, onViewDetails }: CardProps) => {
           <img
             src={game.imageUrl}
             alt={game.title}
-            className={`w-full h-full object-cover rounded-t-xl ${
+            className={`w-full h-full object-cover rounded-t-xl transition-transform duration-300 ease-in-out hover:scale-110 ${
               imageLoaded ? "opacity-100" : "opacity-0"
             }`}
             onLoad={() => setImageLoaded(true)}
@@ -66,6 +79,16 @@ const Card = ({ game, onAddToCart, onViewDetails }: CardProps) => {
               -{game.discount}%
             </div>
           )}
+
+          {/* Favorite Heart */}
+          <button
+            onClick={handleToggleFavorite}
+            className="absolute top-3 right-3 w-8 h-8 backdrop-blur-md bg-white/20 hover:bg-white/30 border border-white/20 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg"
+          >
+            <span className="text-lg filter drop-shadow-sm">
+              {isFavorite ? "❤️" : "🤍"}
+            </span>
+          </button>
         </div>
       </div>
 

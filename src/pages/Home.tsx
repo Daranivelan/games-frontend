@@ -1,7 +1,9 @@
-import React from "react";
+import { useState } from "react";
 import Card from "../components/Card";
 
 const Home = () => {
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+
   const gameData = {
     id: "1",
     title: "Hollow Knight: Silksong",
@@ -13,12 +15,27 @@ const Home = () => {
     rating: 4.8,
     tags: ["Metroidvania", "Indie", "Action"],
   };
+
+  const handleToggleFavorite = (gameId: string) => {
+    setFavorites((prev) => {
+      const newFavorites = new Set(prev);
+      if (newFavorites.has(gameId)) {
+        newFavorites.delete(gameId);
+      } else {
+        newFavorites.add(gameId);
+      }
+      return newFavorites;
+    });
+  };
+
   return (
     <div className=" text-[#e6e5c7] min-h-screen flex items-center justify-center">
       <Card
         game={gameData}
         onAddToCart={(id) => console.log("Added to cart:", id)}
         onViewDetails={(id) => console.log("View details:", id)}
+        onToggleFavorite={handleToggleFavorite}
+        isFavorite={favorites.has(gameData.id)}
       />
     </div>
   );
