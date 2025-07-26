@@ -19,7 +19,9 @@ type GameContextType = {
   games: Game[];
   loading: boolean;
   addFavorite: (gameId: string) => Promise<void>;
+  addCartItem: (gameId: string) => Promise<void>;
   removeFavorite: (gameId: string) => Promise<void>;
+  deleteCartItem: (gameId: string) => Promise<void>;
   removeAllFavorites: () => Promise<void>;
   fetchGame: (gameId: string) => Promise<any>;
 };
@@ -30,7 +32,9 @@ const gameContext = createContext<GameContextType>({
   games: [],
   loading: false,
   addFavorite: async () => {},
+  addCartItem: async () => {},
   removeFavorite: async () => {},
+  deleteCartItem: async () => {},
   removeAllFavorites: async () => {},
   fetchGame: async () => ({}),
 });
@@ -39,17 +43,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [cartItems, setCartItems] = useState<string[]>([]);
   const [games, setGames] = useState<Game[]>([]);
-  console.log(games);
 
   const [loading, setLoading] = useState<boolean>(false);
 
   const { user } = useAuth();
 
-  console.log("favorites", favorites);
-
   useEffect(() => {
     fetchGames();
     getFavorites();
+    getCartItems();
   }, [user]);
 
   //   const handleFavoriteToggle = (gameId: string) => {};
@@ -58,7 +60,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     setLoading(true);
     try {
       const response = await api.get("/games");
-      console.log("products" + response.data);
       setGames(response.data.data);
     } catch (error) {
       console.error("Error fetching games:", error);
@@ -146,12 +147,63 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log("Favorites response:", response.data.gameIds);
       const gameIds = response.data.gameIds;
       setFavorites(gameIds);
-      console.log("Favorites fetched:", response.data);
     } catch (error) {
       console.error("Error fetching favorites:", error);
+    }
+  };
+
+  const getCartItems = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const response = await api.get("/cart", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const gameIds = response.data.game;
+      setCartItems(gameIds);
+    } catch (error) {
+      console.error("Error fetching cart items:", error);
+    }
+  };
+
+  const addCartItem = async (gameId: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.post(
+        "/cart",
+        { gameId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setCartItems((prev) => [...prev, gameId]);
+      console.log("Game added to cart:", response.data);
+    } catch (error) {
+      console.error("Error adding game to cart:", error);
+    }
+  };
+
+  const deleteCartItem = async (gameId: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.delete(`/cart/${gameId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      setCartItems((prev) => prev.filter((id) => id !== gameId));
+      console.log("Game removed from cart:", response.data);
+    } catch (error) {
+      console.error("Error removing game from cart:", error);
     }
   };
 
@@ -166,6 +218,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         fetchGame,
         removeFavorite,
         removeAllFavorites,
+        addCartItem,
+        deleteCartItem,
       }}
     >
       {children}
