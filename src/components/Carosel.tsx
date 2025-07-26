@@ -17,6 +17,7 @@ const Carosel = () => {
         centerSlidePercentage={90}
         showStatus={false}
         showThumbs={false}
+        showArrows={false}
       >
         {images.map((image, index) => (
           <div key={index}>

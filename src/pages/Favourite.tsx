@@ -1,59 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../components/Card";
+import { useGameStore } from "../context/gameContext";
+import type { Game } from "../types/games";
 
 const Favourite = () => {
-  const [favorites, setFavorites] = useState<Set<string>>(
-    new Set(["1", "2", "3"])
-  ); // Initialize with sample favorite IDs
+  const { favorites, removeAllFavorites, games } = useGameStore();
+  // Initialize with sample favorite IDs
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [favoriteGames, setFavoriteGames] = useState<Game[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchFavoriteGames = async () => {
+      if (favorites.length === 0) {
+        setFavoriteGames([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // Option 2: Alternative - filter from existing games array (more efficient if all games are already loaded)
+        const favoriteGameDetails = games.filter((game) =>
+          favorites.includes(game._id)
+        );
+        console.log("favoriteGameDetails", favoriteGameDetails);
+
+        setFavoriteGames(favoriteGameDetails);
+        console.log("favoriteGames", favoriteGames);
+      } catch (error) {
+        console.error("Error fetching favorite games:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFavoriteGames();
+  }, [favorites, games]);
 
   // Sample favorite games data - replace with actual data from your state management
-  const favoriteGames = [
-    {
-      id: "1",
-      title: "Hollow Knight: Silksong",
-      price: 29.99,
-      originalPrice: 39.99,
-      discount: 25,
-      imageUrl:
-        "https://cdn.akamai.steamstatic.com/steam/apps/1139950/header.jpg",
-      rating: 4.8,
-      tags: ["Metroidvania", "Indie", "Action"],
-    },
-    {
-      id: "2",
-      title: "Elden Ring",
-      price: 59.99,
-      originalPrice: 79.99,
-      discount: 25,
-      imageUrl:
-        "https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg",
-      rating: 4.9,
-      tags: ["RPG", "Open World", "Action"],
-    },
-    {
-      id: "3",
-      title: "Black Myth: Wukong",
-      price: 49.99,
-      imageUrl:
-        "https://cdn.akamai.steamstatic.com/steam/apps/2358720/header.jpg",
-      rating: 4.7,
-      tags: ["Action", "Adventure", "Mythology"],
-    },
-    // Add more games as needed
-  ];
-
-  const handleToggleFavorite = (gameId: string) => {
-    setFavorites((prev) => {
-      const newFavorites = new Set(prev);
-      if (newFavorites.has(gameId)) {
-        newFavorites.delete(gameId);
-      } else {
-        newFavorites.add(gameId);
-      }
-      return newFavorites;
-    });
-  };
 
   const handleAddToCart = (gameId: string) => {
     console.log("Added to cart:", gameId);
@@ -65,18 +49,7 @@ const Favourite = () => {
     // Navigate to product details page
   };
 
-  const clearAllFavorites = () => {
-    if (
-      window.confirm(
-        "Are you sure you want to remove all games from your favorites?"
-      )
-    ) {
-      setFavorites(new Set());
-    }
-  };
-
   // Filter games to only show favorited ones
-  const displayedGames = favoriteGames.filter((game) => favorites.has(game.id));
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1a1814] to-[#2d2a1f] text-[#e6e5c7]">
@@ -89,15 +62,15 @@ const Favourite = () => {
                 My Favorite Games
               </h1>
               <p className="text-[#a8a594] text-lg">
-                {displayedGames.length > 0
-                  ? `You have ${displayedGames.length} favorite ${
-                      displayedGames.length === 1 ? "game" : "games"
+                {favoriteGames.length > 0
+                  ? `You have ${favoriteGames.length} favorite ${
+                      favoriteGames.length === 1 ? "game" : "games"
                     }`
                   : "Start building your collection of favorite games"}
               </p>
             </div>
 
-            {displayedGames.length > 0 && (
+            {favoriteGames.length > 0 && (
               <div className="flex items-center space-x-4 mt-4 md:mt-0">
                 {/* View Mode Toggle */}
                 <div className="flex items-center space-x-2">
@@ -144,7 +117,7 @@ const Favourite = () => {
 
                 {/* Clear All Button */}
                 <button
-                  onClick={clearAllFavorites}
+                  onClick={removeAllFavorites}
                   className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-2"
                 >
                   <svg
@@ -171,7 +144,7 @@ const Favourite = () => {
         </div>
 
         {/* Content Section */}
-        {displayedGames.length === 0 ? (
+        {favoriteGames.length === 0 ? (
           /* Empty State */
           <div className="flex flex-col items-center justify-center py-16">
             <div className="text-center space-y-6">
@@ -229,25 +202,19 @@ const Favourite = () => {
                 : "space-y-4"
             }
           >
-            {displayedGames.map((game) => (
+            {favoriteGames.map((game) => (
               <div
-                key={game.id}
+                key={game._id}
                 className={viewMode === "list" ? "max-w-none" : ""}
               >
-                <Card
-                  game={game}
-                  onAddToCart={handleAddToCart}
-                  onViewDetails={handleViewDetails}
-                  onToggleFavorite={handleToggleFavorite}
-                  isFavorite={favorites.has(game.id)}
-                />
+                <Card key={game._id} game={game} />
               </div>
             ))}
           </div>
         )}
 
         {/* Footer Actions */}
-        {displayedGames.length > 0 && (
+        {favoriteGames.length > 0 && (
           <div className="mt-12 text-center">
             <div className="inline-flex items-center space-x-4 bg-[#2d2a1f] border border-[#3e3b2c] rounded-lg p-4">
               <span className="text-[#a8a594]">Love what you see?</span>

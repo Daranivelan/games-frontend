@@ -1,10 +1,5 @@
-import { createContext, useContext, useState } from "react";
-import type {
-  AuthContextType,
-  AuthFormData,
-  AuthProviderProps,
-  User,
-} from "../types/auth";
+import { createContext, useContext, useState, type ReactNode } from "react";
+import type { AuthContextType, AuthFormData, User } from "../types/auth";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -13,9 +8,8 @@ const api = axios.create({
 });
 const authContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
 
@@ -29,9 +23,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       toast.error(response.data.message);
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating user:", error);
-      toast.error("Error creating user");
+      toast.error(error.response?.data?.message || "Error creating user");
       return false;
     }
   };
@@ -43,22 +37,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const response = await api.post("/login", formData);
       if (response.status === 201) {
         setUser(response.data.user);
-
         setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
         toast.success(response.data.message);
         return true;
       }
       return false;
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error logging in user:", error);
-      toast.error("Error logging in user");
+      toast.error(error.response?.data?.message || "Error logging in user");
       return false;
     }
   };
 
   return (
     <authContext.Provider
-      value={{ user, isAuthenticated, loading, token, createUser, loginUser }}
+      value={{ user, loading, token, createUser, loginUser }}
     >
       {children}
     </authContext.Provider>

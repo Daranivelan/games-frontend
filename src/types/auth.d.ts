@@ -1,9 +1,8 @@
 export interface AuthContextType {
   user: User | null;
-  isAuthenticated: boolean;
+  // isAuthenticated: boolean;
   loginUser: (formData: Omit<AuthFormData, "username">) => Promise<boolean>;
   createUser: (formData: AuthFormData) => Promise<boolean>;
-  //   logout: () => void;
   loading: boolean;
   token: string | null;
 }
@@ -23,6 +22,3 @@ export interface AuthFormData {
 }
 
 // Define props type for AuthProvider
-export interface AuthProviderProps {
-  children: ReactNode;
-}
