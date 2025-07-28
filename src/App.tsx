@@ -8,6 +8,7 @@ import Navbar from "./components/Navbar";
 import Cart from "./pages/Cart";
 import Favourite from "./pages/Favourite";
 import { GameProvider } from "./context/gameContext";
+import GameDetails from "./pages/GameDetails";
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
             <Route path="/" element={<Home />} />
+            <Route path="/game/:id" element={<GameDetails />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/favourites" element={<Favourite />} />
           </Routes>

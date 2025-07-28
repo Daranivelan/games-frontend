@@ -1,13 +1,19 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/authContext";
+import logo from "../assets/Frame.png";
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, logoutUser } = useAuth();
+
+  const hideNavbarRoutes = ["/login", "/signup"];
+  if (hideNavbarRoutes.includes(location.pathname)) {
+    return null;
+  }
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +23,6 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    // logoutUser();
     navigate("/");
   };
 
@@ -26,16 +31,21 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gradient-to-r from-[#ff4e08] to-[#ff6b35] shadow-lg sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="bg-gradient-to-r from-[#ff4b04] to-[#ff6b35] shadow-lg sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
             <button
               onClick={() => navigate("/")}
-              className="text-white text-2xl font-bold hover:text-[#e6e5c7] transition-colors duration-200"
+              className="text-white text-2xl font-bold hover:text-[#e6e5c7] transition-colors duration-200 flex items-center gap-2"
             >
-              🎮 GameStore
+              <img
+                src={logo}
+                alt="GameStore Logo"
+                className="h-16 rounded-full"
+              />
+              <span>PLAYTHRU</span>
             </button>
           </div>
 
@@ -139,7 +149,7 @@ const Navbar = () => {
                   Profile
                 </button>
                 <button
-                  onClick={handleLogout}
+                  onClick={logoutUser}
                   className="px-3 py-1.5 bg-white/10 text-white hover:bg-white/20 rounded-lg text-sm font-medium transition-all duration-200"
                 >
                   Logout
@@ -275,10 +285,7 @@ const Navbar = () => {
                       Profile
                     </button>
                     <button
-                      onClick={() => {
-                        handleLogout();
-                        setIsMenuOpen(false);
-                      }}
+                      onClick={logoutUser}
                       className="block w-full text-left px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200"
                     >
                       Logout

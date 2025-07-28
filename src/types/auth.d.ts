@@ -3,13 +3,14 @@ export interface AuthContextType {
   // isAuthenticated: boolean;
   loginUser: (formData: Omit<AuthFormData, "username">) => Promise<boolean>;
   createUser: (formData: AuthFormData) => Promise<boolean>;
+  logoutUser: () => Promise<void>;
   loading: boolean;
   token: string | null;
 }
 
 // Define user type
 export interface User {
-  id: string;
+  _id: string;
   username: string;
   email: string;
 }

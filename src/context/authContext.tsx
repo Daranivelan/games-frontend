@@ -1,7 +1,14 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 import type { AuthContextType, AuthFormData, User } from "../types/auth";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api/auth",
@@ -12,6 +19,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setToken(storedToken);
+      api.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+
+      getCurrentUser();
+    }
+  }, []);
+
+  const getCurrentUser = async () => {
+    try {
+      const response = await api.get("/current");
+      if (response.status === 200) {
+        setUser(response.data.user);
+      }
+    } catch (error: any) {
+      console.error("Error fetching current user:", error);
+    }
+  };
 
   const createUser = async (formData: AuthFormData): Promise<boolean> => {
     try {
@@ -19,6 +48,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (response.status === 201) {
         console.log("User created successfully:", response.data);
         toast.success(response.data.message);
+        navigate("/login");
         return true;
       }
       toast.error(response.data.message);
@@ -40,6 +70,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(response.data.token);
         localStorage.setItem("token", response.data.token);
         toast.success(response.data.message);
+        navigate("/");
         return true;
       }
       return false;
@@ -50,9 +81,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const logoutUser = async () => {
+    localStorage.removeItem("token");
+    setUser(null);
+    setToken(null);
+    navigate("/login");
+  };
+
   return (
     <authContext.Provider
-      value={{ user, loading, token, createUser, loginUser }}
+      value={{ user, loading, token, createUser, loginUser, logoutUser }}
     >
       {children}
     </authContext.Provider>

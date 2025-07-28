@@ -8,6 +8,7 @@ import {
 } from "react";
 import { useAuth } from "./authContext";
 import type { Game } from "../types/games";
+import type { Review } from "../types/review";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api",
@@ -17,32 +18,41 @@ type GameContextType = {
   favorites: string[];
   cartItems: string[];
   games: Game[];
+  reviews: Review[];
   loading: boolean;
   addFavorite: (gameId: string) => Promise<void>;
   addCartItem: (gameId: string) => Promise<void>;
   removeFavorite: (gameId: string) => Promise<void>;
   deleteCartItem: (gameId: string) => Promise<void>;
   removeAllFavorites: () => Promise<void>;
-  fetchGame: (gameId: string) => Promise<any>;
+  fetchGame: (gameId: string) => Promise<Game[]>;
+  addReview: (gameId: string, comment: string, rating: number) => Promise<void>;
+  getReviews: (gameId: string) => Promise<Review[]>;
+  deleteReview: (reviewId: string) => Promise<void>;
 };
 
 const gameContext = createContext<GameContextType>({
   favorites: [],
   cartItems: [],
   games: [],
+  reviews: [],
   loading: false,
   addFavorite: async () => {},
   addCartItem: async () => {},
   removeFavorite: async () => {},
   deleteCartItem: async () => {},
   removeAllFavorites: async () => {},
-  fetchGame: async () => ({}),
+  fetchGame: async () => [],
+  addReview: async () => {},
+  getReviews: async () => [],
+  deleteReview: async () => {},
 });
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   //   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [cartItems, setCartItems] = useState<string[]>([]);
   const [games, setGames] = useState<Game[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -96,7 +106,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         }
       );
       setFavorites((prev) => [...prev, gameId]);
-      console.log("Favorite added:", response.data);
     } catch (error) {
       console.error("Error adding favorite:", error);
     }
@@ -114,7 +123,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       setFavorites((prev) => prev.filter((id) => id !== gameId));
-      console.log("Favorite removed:", response.data);
     } catch (error) {
       console.error("Error removing favorite:", error);
     }
@@ -131,7 +139,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       setFavorites([]);
-      console.log("All favorites removed:", response.data);
     } catch (error) {
       console.error("Error removing all favorites:", error);
     }
@@ -185,7 +192,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         }
       );
       setCartItems((prev) => [...prev, gameId]);
-      console.log("Game added to cart:", response.data);
     } catch (error) {
       console.error("Error adding game to cart:", error);
     }
@@ -201,9 +207,59 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       setCartItems((prev) => prev.filter((id) => id !== gameId));
-      console.log("Game removed from cart:", response.data);
     } catch (error) {
       console.error("Error removing game from cart:", error);
+    }
+  };
+
+  const getReviews = async (gameId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const response = await api.get(`/review/${gameId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      const fetchedReviews = response.data.review;
+      setReviews(fetchedReviews);
+      return fetchedReviews;
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+      return [];
+    }
+  };
+
+  const addReview = async (gameId: string, comment: string, rating: number) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.post(
+        `/review/${gameId}`,
+        { comment, rating, gameId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
+  };
+
+  const deleteReview = async (reviewId: string) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.delete(`/review/${reviewId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Error deleting review:", error);
     }
   };
 
@@ -213,6 +269,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         favorites,
         cartItems,
         games,
+        reviews,
         loading,
         addFavorite,
         fetchGame,
@@ -220,6 +277,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         removeAllFavorites,
         addCartItem,
         deleteCartItem,
+        addReview,
+        getReviews,
+        deleteReview,
       }}
     >
       {children}

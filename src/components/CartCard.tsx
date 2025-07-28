@@ -156,27 +156,6 @@ const CartCard = (props: CartCardProps) => {
             {/* Action Buttons */}
             <div className="flex items-center space-x-3">
               {/* Move to Favorites */}
-              {!isFavorite && (
-                <button
-                  onClick={handleAddToFavorites}
-                  className="text-[#a8a594] hover:text-[#ff4e08] px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center space-x-1 border border-[#3e3b2c] hover:border-[#ff4e08]/30"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                  <span>Save</span>
-                </button>
-              )}
 
               {/* Remove Button */}
               <button

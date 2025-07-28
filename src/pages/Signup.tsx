@@ -22,13 +22,7 @@ const Signup = () => {
     setIsLoading(true);
     setError("");
 
-    const success = await createUser(formData);
-    if (success) {
-      navigate("/login");
-    } else {
-      setError("Failed to create account. Please try again.");
-    }
-    setIsLoading(false);
+    await createUser(formData);
   };
 
   return (

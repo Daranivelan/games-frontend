@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { useGameStore } from "../context/gameContext";
 import type { Game } from "../types/games";
+import { useNavigate } from "react-router-dom";
 
 interface CardProps {
   game: Game;
 }
 
 const Card = (props: CardProps) => {
+  const navigate = useNavigate();
   const { game } = props;
   const {
     addFavorite,
@@ -61,7 +63,7 @@ const Card = (props: CardProps) => {
   };
 
   const handleCardClick = () => {
-    // Navigate to game details page
+    navigate(`/game/${game._id}`);
     console.log(`Navigate to game details: ${game._id}`);
   };
 

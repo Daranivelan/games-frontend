@@ -19,14 +19,7 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
     setError("");
-
-    const success = await loginUser(formData);
-    if (success) {
-      navigate("/");
-    } else {
-      setError("Invalid email or password. Please try again.");
-    }
-    setIsLoading(false);
+    await loginUser(formData);
   };
 
   return (
