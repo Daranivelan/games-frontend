@@ -1,13 +1,29 @@
-import { useEffect } from "react";
+import { useRef, useState } from "react";
 import ReviewCard from "../components/ReviewCard";
 import { useParams } from "react-router-dom";
-import { useGameStore } from "../context/gameContext";
 import ReviewContainer from "../components/ReviewContainer";
 import GameDetailsContainer from "../components/GameDetailsContainer";
+import type { Review } from "../types/review";
 
 const GameDetails = () => {
   const { id } = useParams<{ id: string }>();
-  console.log(id);
+  const reviewCardRef = useRef<HTMLDivElement>(null);
+  const [editingReview, setEditingReview] = useState<Review | null>(null);
+
+  const scrollToReviewCard = (review: Review) => {
+    setEditingReview(review);
+
+    setTimeout(() => {
+      reviewCardRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }, 100);
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReview(null);
+  };
 
   if (!id) {
     return (
@@ -23,8 +39,14 @@ const GameDetails = () => {
   return (
     <div className="bg-gradient-to-br from-[#1a1814] to-[#2d2a1f] text-[#e6e5c7] min-h-screen p-6">
       <GameDetailsContainer gameId={id} />
-      <ReviewCard gameId={id} />
-      <ReviewContainer gameId={id} />
+      <div ref={reviewCardRef}>
+        <ReviewCard
+          gameId={id}
+          editingReview={editingReview}
+          onCancelEdit={handleCancelEdit}
+        />
+      </div>
+      <ReviewContainer gameId={id} onEditClick={scrollToReviewCard} />
     </div>
   );
 };

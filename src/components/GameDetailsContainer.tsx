@@ -10,7 +10,6 @@ const GameDetailsContainer = ({ gameId }: { gameId: string }) => {
     .split(",")
     .map((screenshot) => screenshot.trim())
     .slice(0, 5);
-  console.log("screenshots", screenshots);
 
   const { fetchGame } = useGameStore();
 
@@ -36,7 +35,7 @@ const GameDetailsContainer = ({ gameId }: { gameId: string }) => {
       <div className="flex-1 w-2/3 bg-[#2d2a1f] p-4 rounded-lg shadow-md text-[#e6e5c7]">
         {game ? (
           <>
-            <div className="border-b border-[#/50] pb-4 mb-4">
+            <div className="border-b pb-4 mb-4">
               <h2 className="text-2xl font-bold text-[#ff4e08]">{game.Name}</h2>
             </div>
             <div>

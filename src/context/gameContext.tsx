@@ -29,6 +29,10 @@ type GameContextType = {
   addReview: (gameId: string, comment: string, rating: number) => Promise<void>;
   getReviews: (gameId: string) => Promise<Review[]>;
   deleteReview: (reviewId: string) => Promise<void>;
+  updateReview: (
+    reviewId: string,
+    updatedData: Partial<Review>
+  ) => Promise<void>;
 };
 
 const gameContext = createContext<GameContextType>({
@@ -46,6 +50,7 @@ const gameContext = createContext<GameContextType>({
   addReview: async () => {},
   getReviews: async () => [],
   deleteReview: async () => {},
+  updateReview: async () => {},
 });
 export const GameProvider = ({ children }: { children: ReactNode }) => {
   //   const [isFavorite, setIsFavorite] = useState<boolean>(false);
@@ -263,6 +268,23 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateReview = async (
+    reviewId: string,
+    updatedData: Partial<Review>
+  ) => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await api.put(`/review/${reviewId}`, updatedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  };
+
   return (
     <gameContext.Provider
       value={{
@@ -280,6 +302,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         addReview,
         getReviews,
         deleteReview,
+        updateReview,
       }}
     >
       {children}

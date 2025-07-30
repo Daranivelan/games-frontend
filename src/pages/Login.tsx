@@ -20,6 +20,7 @@ const Login = () => {
     setIsLoading(true);
     setError("");
     await loginUser(formData);
+    setIsLoading(false);
   };
 
   return (
