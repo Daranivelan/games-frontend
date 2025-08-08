@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import GOW from "../assets/God_of_War.jpg";
 import ER from "../assets/Elden_Ring.jpg";
 import BMW from "../assets/Black_Myth_Wukong.jpeg";
@@ -53,7 +53,7 @@ const Carosel = () => {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <Carousel
         selectedItem={currentSlide}
         onChange={handleSlideChange}
@@ -70,85 +70,45 @@ const Carosel = () => {
         {slides.map((slide, index) => (
           <div key={index} className="relative">
             {/* Background Image */}
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="w-full h-full object-cover"
-            />
+            <div className="w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[80vh] xl:h-[90vh] relative overflow-hidden">
+              <img
+                src={slide.image}
+                alt={slide.title}
+                className="w-full h-full object-cover"
+              />
+            </div>
 
             {/* Gradient Overlay */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent"></div>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30 sm:from-black/80 sm:via-black/40 sm:to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
 
             {/* Content Overlay */}
             <div className="absolute inset-0 flex items-center">
-              <div className="container mx-auto px-6 lg:px-12">
-                <div className="max-w-2xl text-left text-white">
+              <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 xl:px-12">
+                <div className="max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl text-left text-white">
                   {/* Badge */}
-                  <div className="mb-4">
+                  <div className="mb-2 sm:mb-3 lg:mb-4">
                     <span
-                      className={`${slide.badgeColor} text-white px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide`}
+                      className={`${slide.badgeColor} text-white px-2 py-1 sm:px-3 sm:py-1 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wide shadow-lg`}
                     >
                       {slide.badge}
                     </span>
                   </div>
 
                   {/* Title */}
-                  <h1 className="text-2xl lg:text-6xl font-bold mb-4 leading-tight">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-6xl font-bold mb-2 sm:mb-3 lg:mb-4 leading-tight">
                     {slide.title}
                   </h1>
 
                   {/* Subtitle */}
-                  <p className="text-lg lg:text-xl text-gray-300 mb-4 leading-relaxed">
+                  <p className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-300 mb-2 sm:mb-3 lg:mb-4 leading-relaxed">
                     {slide.subtitle}
                   </p>
 
                   {/* Description */}
-                  <p className="text-base lg:text-lg text-gray-400 mb-6 leading-relaxed max-w-lg">
+                  <p className="text-xs sm:text-sm md:text-base lg:text-lg text-gray-400 mb-4 sm:mb-5 lg:mb-6 leading-relaxed max-w-xs sm:max-w-sm lg:max-w-lg line-clamp-2 sm:line-clamp-3">
                     {slide.description}
                   </p>
-
-                  {/* Price */}
-                  {/* <div className="flex items-center space-x-4 mb-8">
-                      <span className="text-3xl lg:text-4xl font-bold text-[#ff4e08]">
-                        {slide.price}
-                      </span>
-                      <span className="text-lg text-gray-400 line-through">
-                        {slide.originalPrice}
-                      </span>
-                      <span className="bg-green-600 text-white px-2 py-1 rounded text-sm font-medium">
-                        Save{" "}
-                        {Math.round(
-                          ((parseFloat(slide.originalPrice.replace("$", "")) -
-                            parseFloat(slide.price.replace("$", ""))) /
-                            parseFloat(slide.originalPrice.replace("$", ""))) *
-                            100
-                        )}
-                        %
-                      </span>
-                    </div> */}
-
-                  {/* Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <button className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-black px-8 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2">
-                      <span>Learn More</span>
-                    </button>
-                    <button className="bg-[#ff4e08] hover:bg-[#e63e00] text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-2">
-                      <svg
-                        className="w-6 h-6"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M3 3h2l.4 2M7 13h10l4-8H5.4m2.6 8L6 4H4m4 9v6a1 1 0 001 1h10a1 1 0 001-1v-6M9 19.5h.01M20 19.5h.01"
-                        />
-                      </svg>
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>
@@ -157,12 +117,12 @@ const Carosel = () => {
       </Carousel>
 
       {/* Custom Navigation Dots */}
-      <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-3">
+      <div className="absolute bottom-3 sm:bottom-4 lg:bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-2 sm:space-x-3">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-300 ${
+            className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
               currentSlide === index
                 ? "bg-[#ff4e08] scale-125"
                 : "bg-white/50 hover:bg-white/70"
@@ -177,11 +137,11 @@ const Carosel = () => {
         onClick={() =>
           goToSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1)
         }
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
+        className="absolute left-2 sm:left-3 lg:left-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 sm:p-2.5 lg:p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
         aria-label="Previous slide"
       >
         <svg
-          className="w-6 h-6"
+          className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -199,11 +159,11 @@ const Carosel = () => {
         onClick={() =>
           goToSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1)
         }
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
+        className="absolute right-2 sm:right-3 lg:right-4 top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-2 sm:p-2.5 lg:p-3 rounded-full transition-all duration-300 backdrop-blur-sm"
         aria-label="Next slide"
       >
         <svg
-          className="w-6 h-6"
+          className="w-4 sm:w-5 lg:w-6 h-4 sm:h-5 lg:h-6"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -218,7 +178,7 @@ const Carosel = () => {
       </button>
 
       {/* Slide Counter */}
-      <div className="absolute top-6 right-6 bg-black/50 text-white px-3 py-1 rounded-full text-sm backdrop-blur-sm">
+      <div className="absolute top-3 sm:top-4 lg:top-6 right-3 sm:right-4 lg:right-6 bg-black/50 text-white px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm backdrop-blur-sm">
         {currentSlide + 1} / {slides.length}
       </div>
     </div>

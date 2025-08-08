@@ -9,6 +9,9 @@ import {
 import { useAuth } from "./authContext";
 import type { Game } from "../types/games";
 import type { Review } from "../types/review";
+import { toast } from "react-toastify";
+import { Ticket } from "lucide-react";
+import { showSnackbar } from "../utils/snackbar";
 
 const api = axios.create({
   baseURL: "http://localhost:3000/api",
@@ -18,6 +21,7 @@ type GameContextType = {
   favorites: string[];
   cartItems: string[];
   games: Game[];
+  searchedGame: Game[];
   reviews: Review[];
   loading: boolean;
   addFavorite: (gameId: string) => Promise<void>;
@@ -26,6 +30,7 @@ type GameContextType = {
   deleteCartItem: (gameId: string) => Promise<void>;
   removeAllFavorites: () => Promise<void>;
   fetchGame: (gameId: string) => Promise<Game[]>;
+  searchGames: (name: string) => Promise<Game[]>;
   addReview: (gameId: string, comment: string, rating: number) => Promise<void>;
   getReviews: (gameId: string) => Promise<Review[]>;
   deleteReview: (reviewId: string) => Promise<void>;
@@ -39,6 +44,7 @@ const gameContext = createContext<GameContextType>({
   favorites: [],
   cartItems: [],
   games: [],
+  searchedGame: [],
   reviews: [],
   loading: false,
   addFavorite: async () => {},
@@ -47,18 +53,18 @@ const gameContext = createContext<GameContextType>({
   deleteCartItem: async () => {},
   removeAllFavorites: async () => {},
   fetchGame: async () => [],
+  searchGames: async () => [],
   addReview: async () => {},
   getReviews: async () => [],
   deleteReview: async () => {},
   updateReview: async () => {},
 });
 export const GameProvider = ({ children }: { children: ReactNode }) => {
-  //   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [favorites, setFavorites] = useState<string[]>([]);
   const [cartItems, setCartItems] = useState<string[]>([]);
   const [games, setGames] = useState<Game[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-
+  const [searchedGame, setSearchedGame] = useState<Game[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
   const { user } = useAuth();
@@ -68,8 +74,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     getFavorites();
     getCartItems();
   }, [user]);
-
-  //   const handleFavoriteToggle = (gameId: string) => {};
 
   const fetchGames = async () => {
     setLoading(true);
@@ -92,11 +96,25 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const addFavorite = async (gameId: string) => {
-    // const game = await fetchGame(gameId);
-    const token = localStorage.getItem("token");
+  const searchGames = async (name: string) => {
+    setLoading(true);
+    try {
+      const response = await api.get(`/games/search?name=${name}`);
+      setSearchedGame(response.data.data);
+      return response.data.data;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    // if (!game) return;
+  const addFavorite = async (gameId: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to add favorites.");
+      return;
+    }
     try {
       const response = await api.post(
         "/favourites",
@@ -111,8 +129,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         }
       );
       setFavorites((prev) => [...prev, gameId]);
+      toast.success("Game added to favorites!");
     } catch (error) {
       console.error("Error adding favorite:", error);
+      toast.error("Failed to add game to favorites.");
     }
   };
 
@@ -128,8 +148,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       setFavorites((prev) => prev.filter((id) => id !== gameId));
+      toast.success("Game removed from favorites!");
     } catch (error) {
       console.error("Error removing favorite:", error);
+      toast.error("Failed to remove game from favorites.");
     }
   };
 
@@ -144,12 +166,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       setFavorites([]);
+      toast.success("All favorites removed successfully!");
     } catch (error) {
       console.error("Error removing all favorites:", error);
+      toast.error("Failed to remove all favorites.");
     }
   };
 
   const getFavorites = async () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
@@ -163,10 +188,13 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       setFavorites(gameIds);
     } catch (error) {
       console.error("Error fetching favorites:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const getCartItems = async () => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
@@ -180,11 +208,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
       setCartItems(gameIds);
     } catch (error) {
       console.error("Error fetching cart items:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const addCartItem = async (gameId: string) => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to add items to the cart.");
+      return;
+    }
     try {
       const response = await api.post(
         "/cart",
@@ -197,8 +231,10 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         }
       );
       setCartItems((prev) => [...prev, gameId]);
+      toast.success("Game added to cart!");
     } catch (error) {
       console.error("Error adding game to cart:", error);
+      toast.error("Failed to add game to cart.");
     }
   };
 
@@ -212,12 +248,15 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         },
       });
       setCartItems((prev) => prev.filter((id) => id !== gameId));
+      toast.success("Game removed from cart!");
     } catch (error) {
       console.error("Error removing game from cart:", error);
+      toast.error("Failed to remove game from cart.");
     }
   };
 
   const getReviews = async (gameId: string) => {
+    setLoading(true);
     const token = localStorage.getItem("token");
     if (!token) return;
     try {
@@ -233,11 +272,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       console.error("Error fetching reviews:", error);
       return [];
+    } finally {
+      setLoading(false);
     }
   };
 
   const addReview = async (gameId: string, comment: string, rating: number) => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("You must be logged in to add a review.");
+      return;
+    }
     try {
       const response = await api.post(
         `/review/${gameId}`,
@@ -249,8 +294,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           },
         }
       );
+      const newReview: Review = response.data.review;
+      setReviews((prev) => [...prev, newReview]);
+      toast.success("Review added successfully!");
     } catch (error) {
       console.error("Error adding review:", error);
+      toast.error("Failed to add review.");
     }
   };
 
@@ -263,8 +312,11 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           "Content-Type": "application/json",
         },
       });
+      setReviews((prev) => prev.filter((review) => review._id !== reviewId));
+      showSnackbar("Review deleted successfully!", "success");
     } catch (error) {
       console.error("Error deleting review:", error);
+      showSnackbar("Failed to delete review.", "error");
     }
   };
 
@@ -280,8 +332,14 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           "Content-Type": "application/json",
         },
       });
+      const updatedReview: Review = response.data.review;
+      setReviews((prev) =>
+        prev.map((review) => (review._id === reviewId ? updatedReview : review))
+      );
+      toast.success("Review updated successfully!");
     } catch (error) {
       console.error("Error updating review:", error);
+      toast.error("Failed to update review.");
     }
   };
 
@@ -291,10 +349,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         favorites,
         cartItems,
         games,
+        searchedGame,
         reviews,
         loading,
         addFavorite,
         fetchGame,
+        searchGames,
         removeFavorite,
         removeAllFavorites,
         addCartItem,

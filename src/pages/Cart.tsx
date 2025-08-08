@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CartCard from "../components/CartCard";
 import { useGameStore } from "../context/gameContext";
 import type { Game } from "../types/games";
+import Loading from "../components/Loading";
 
 const Cart = () => {
   const { cartItems, games } = useGameStore();
@@ -33,17 +34,6 @@ const Cart = () => {
 
   const totalPrice = cartGames.reduce((sum, game) => sum + game.Price, 0);
   const totalItems = cartGames.length;
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a1814] to-[#2d2a1f] text-[#e6e5c7] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-2 border-[#ff4e08] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#a8a594]">Loading your cart...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (cartGames.length === 0) {
     return (
@@ -120,11 +110,17 @@ const Cart = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Cart Items */}
-          <div className="lg:col-span-2 space-y-4">
-            {cartGames.map((game) => (
-              <CartCard key={game._id} cartGame={game} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="col-span-1 lg:col-span-2">
+              <Loading />
+            </div>
+          ) : (
+            <div className="lg:col-span-2 space-y-4">
+              {cartGames.map((game) => (
+                <CartCard key={game._id} cartGame={game} />
+              ))}
+            </div>
+          )}
 
           {/* Order Summary */}
           <div className="lg:col-span-1">

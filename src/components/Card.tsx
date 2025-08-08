@@ -70,7 +70,7 @@ const Card = (props: CardProps) => {
   return (
     <div
       onClick={handleCardClick}
-      className="w-[280px] bg-[#2d2a1f] rounded-xl shadow-lg cursor-pointer overflow-hidden border border-[#3e3b2c]/50 hover:border-[#ff4e08]/30 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] group"
+      className="w-full max-w-[280px] mx-auto bg-[#2d2a1f] rounded-xl shadow-lg cursor-pointer overflow-hidden border border-[#3e3b2c]/50 hover:border-[#ff4e08]/30 transition-all duration-300 hover:shadow-xl hover:scale-[1.02] group"
     >
       {/* Image Container */}
       <div className="relative overflow-hidden">
@@ -92,9 +92,9 @@ const Card = (props: CardProps) => {
           />
 
           {/* Price Badge */}
-          <div className="absolute top-3 left-3">
+          <div className="absolute top-2 sm:top-3 left-2 sm:left-3">
             <span
-              className={`px-2 py-1 rounded-md text-xs font-bold shadow-lg ${
+              className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-xs font-bold shadow-lg ${
                 game.Price === 0
                   ? "bg-green-600 text-white"
                   : game.Price > 50
@@ -109,14 +109,14 @@ const Card = (props: CardProps) => {
           {/* Favorite Heart */}
           <button
             onClick={handleToggleFavorite}
-            className={`absolute top-3 right-3 w-8 h-8 backdrop-blur-md border rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
+            className={`absolute top-2 sm:top-3 right-2 sm:right-3 w-7 sm:w-8 h-7 sm:h-8 backdrop-blur-md border rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
               isFavorite
                 ? "bg-red-500/80 border-red-400/50 text-white"
                 : "bg-white/20 hover:bg-white/30 border-white/20 text-white"
             }`}
           >
             <svg
-              className="w-4 h-4"
+              className="w-3.5 sm:w-4 h-3.5 sm:h-4"
               fill={isFavorite ? "currentColor" : "none"}
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -133,9 +133,9 @@ const Card = (props: CardProps) => {
       </div>
 
       {/* Content */}
-      <div className="p-4 space-y-3">
+      <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
         {/* Title */}
-        <h3 className="text-[#e6e5c7] font-semibold text-lg leading-tight line-clamp-2 group-hover:text-[#ff4e08] transition-colors duration-200">
+        <h3 className="text-[#e6e5c7] font-semibold text-base sm:text-lg leading-tight line-clamp-2 group-hover:text-[#ff4e08] transition-colors duration-200">
           {game.Name}
         </h3>
 
@@ -145,13 +145,13 @@ const Card = (props: CardProps) => {
             {tags.slice(0, 3).map((tag, index) => (
               <span
                 key={index}
-                className="bg-[#3e3b2c] text-[#a8a594] px-2 py-1 rounded-md text-xs hover:bg-[#ff4e08]/20 hover:text-[#ff4e08] transition-colors duration-200"
+                className="bg-[#3e3b2c] text-[#a8a594] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md text-xs hover:bg-[#ff4e08]/20 hover:text-[#ff4e08] transition-colors duration-200"
               >
                 {tag}
               </span>
             ))}
             {tags.length > 3 && (
-              <span className="text-[#a8a594] text-xs py-1">
+              <span className="text-[#a8a594] text-xs py-0.5 sm:py-1">
                 +{tags.length - 3}
               </span>
             )}
@@ -163,7 +163,7 @@ const Card = (props: CardProps) => {
           {[...Array(5)].map((_, i) => (
             <svg
               key={i}
-              className={`w-4 h-4 ${
+              className={`w-3.5 sm:w-4 h-3.5 sm:h-4 ${
                 i < 4 ? "text-yellow-400" : "text-gray-600"
               }`}
               fill="currentColor"
@@ -176,13 +176,13 @@ const Card = (props: CardProps) => {
         </div>
 
         {/* Price Section */}
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex items-center justify-between pt-1 sm:pt-2">
           <div className="flex flex-col">
-            <span className="text-[#ff4e08] font-bold text-xl">
+            <span className="text-[#ff4e08] font-bold text-lg sm:text-xl">
               {formatPrice(game.Price)}
             </span>
             {game.Price > 0 && (
-              <span className="text-[#a8a594] text-sm line-through">
+              <span className="text-[#a8a594] text-xs sm:text-sm line-through">
                 ${(game.Price * 1.2).toFixed(2)}
               </span>
             )}
@@ -192,18 +192,18 @@ const Card = (props: CardProps) => {
           <button
             onClick={handleCartToggle}
             disabled={isLoading}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-1 ${
+            className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 flex items-center space-x-1 ${
               inCart
                 ? "bg-red-600/20 text-red-400 border border-red-600/30 hover:bg-red-600 hover:text-white"
                 : "bg-[#ff4e08] hover:bg-[#e63e00] text-white"
             } disabled:opacity-50 disabled:cursor-not-allowed`}
           >
             {isLoading ? (
-              <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+              <div className="w-3 sm:w-4 h-3 sm:h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
             ) : (
               <>
                 <svg
-                  className="w-4 h-4"
+                  className="w-3 sm:w-4 h-3 sm:h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -219,7 +219,9 @@ const Card = (props: CardProps) => {
                     }
                   />
                 </svg>
-                <span>{inCart ? "Remove" : "Add"}</span>
+                <span className="hidden xs:inline">
+                  {inCart ? "Remove" : "Add"}
+                </span>
               </>
             )}
           </button>

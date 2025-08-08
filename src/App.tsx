@@ -9,11 +9,17 @@ import Cart from "./pages/Cart";
 import Favourite from "./pages/Favourite";
 import { GameProvider } from "./context/gameContext";
 import GameDetails from "./pages/GameDetails";
+import Games from "./pages/Games";
+import Error from "./pages/Error";
 
 const App = () => {
   return (
     <BrowserRouter>
-      <ToastContainer position="bottom-right" />
+      <ToastContainer
+        position="bottom-right"
+        theme="dark"
+        toastClassName="bg-red-100"
+      />
       <AuthProvider>
         <GameProvider>
           <Navbar />
@@ -23,7 +29,9 @@ const App = () => {
             <Route path="/" element={<Home />} />
             <Route path="/game/:id" element={<GameDetails />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/games" element={<Games />} />
             <Route path="/favourites" element={<Favourite />} />
+            <Route path="*" element={<Error />} />
           </Routes>
         </GameProvider>
       </AuthProvider>

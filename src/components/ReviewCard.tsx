@@ -68,7 +68,7 @@ const ReviewCard = ({
   };
 
   return (
-    <div className="text-[#e6e5c7] max-w-2xl mx-auto p-6">
+    <div className="text-[#e6e5c7] max-w-7xl mx-auto py-6">
       <div className="bg-[#2d2a1f] rounded-xl p-6 border border-[#3e3b2c]/50">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-[#ff4e08]">
