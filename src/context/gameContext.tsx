@@ -10,11 +10,11 @@ import { useAuth } from "./authContext";
 import type { Game } from "../types/games";
 import type { Review } from "../types/review";
 import { toast } from "react-toastify";
-import { Ticket } from "lucide-react";
+
 import { showSnackbar } from "../utils/snackbar";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: "https://games-backend-kappa.vercel.app/api",
 });
 
 type GameContextType = {
@@ -128,6 +128,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           },
         }
       );
+      if (!response.status) return;
+
       setFavorites((prev) => [...prev, gameId]);
       toast.success("Game added to favorites!");
     } catch (error) {
@@ -147,6 +149,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           "Content-Type": "application/json",
         },
       });
+      if (!response.status) return;
+
       setFavorites((prev) => prev.filter((id) => id !== gameId));
       toast.success("Game removed from favorites!");
     } catch (error) {
@@ -165,6 +169,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           "Content-Type": "application/json",
         },
       });
+      if (!response.status) return;
+
       setFavorites([]);
       toast.success("All favorites removed successfully!");
     } catch (error) {
@@ -230,6 +236,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           },
         }
       );
+      if (!response.status) return;
+
       setCartItems((prev) => [...prev, gameId]);
       toast.success("Game added to cart!");
     } catch (error) {
@@ -247,6 +255,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           "Content-Type": "application/json",
         },
       });
+      if (!response.status) return;
+
       setCartItems((prev) => prev.filter((id) => id !== gameId));
       toast.success("Game removed from cart!");
     } catch (error) {
@@ -312,6 +322,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
           "Content-Type": "application/json",
         },
       });
+      if (!response.status) return;
       setReviews((prev) => prev.filter((review) => review._id !== reviewId));
       showSnackbar("Review deleted successfully!", "success");
     } catch (error) {

@@ -11,13 +11,12 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000/api/auth",
+  baseURL: "https://games-backend-kappa.vercel.app/api/auth",
 });
 const authContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null);
   const navigate = useNavigate();
 
@@ -90,7 +89,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <authContext.Provider
-      value={{ user, loading, token, createUser, loginUser, logoutUser }}
+      value={{ user, token, createUser, loginUser, logoutUser }}
     >
       {children}
     </authContext.Provider>

@@ -4,7 +4,6 @@ export interface AuthContextType {
   loginUser: (formData: Omit<AuthFormData, "username">) => Promise<boolean>;
   createUser: (formData: AuthFormData) => Promise<boolean>;
   logoutUser: () => Promise<void>;
-  loading: boolean;
   token: string | null;
 }
 

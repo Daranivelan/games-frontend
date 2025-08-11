@@ -5,10 +5,8 @@ import type { Game } from "../types/games";
 
 const Favourite = () => {
   const { favorites, removeAllFavorites, games } = useGameStore();
-  // Initialize with sample favorite IDs
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [favoriteGames, setFavoriteGames] = useState<Game[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchFavoriteGames = async () => {
@@ -16,8 +14,6 @@ const Favourite = () => {
         setFavoriteGames([]);
         return;
       }
-
-      setLoading(true);
       try {
         // Option 2: Alternative - filter from existing games array (more efficient if all games are already loaded)
         const favoriteGameDetails = games.filter((game) =>
@@ -30,26 +26,11 @@ const Favourite = () => {
       } catch (error) {
         console.error("Error fetching favorite games:", error);
       } finally {
-        setLoading(false);
       }
     };
 
     fetchFavoriteGames();
   }, [favorites, games]);
-
-  // Sample favorite games data - replace with actual data from your state management
-
-  const handleAddToCart = (gameId: string) => {
-    console.log("Added to cart:", gameId);
-    // Implement cart functionality
-  };
-
-  const handleViewDetails = (gameId: string) => {
-    console.log("View details:", gameId);
-    // Navigate to product details page
-  };
-
-  // Filter games to only show favorited ones
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#1a1814] to-[#2d2a1f] text-[#e6e5c7]">
